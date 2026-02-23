@@ -1,0 +1,85 @@
+version: "2.0"
+
+types:
+  PatternType:
+    enum: [skill, agent, orchestration]
+
+  PatternSource:
+    enum: [internal, external]
+
+  WorkStatus:
+    enum: [draft, completed, exported]
+
+  FileType:
+    enum: [skill_md, agent_md, reference, config]
+
+  GuideStep:
+    enum: [step1, step2, step3, step4, step5]
+    labels:
+      step1: 유형/목적 정의
+      step2: 트리거 설계
+      step3: 구조 설계
+      step4: 도구/권한 설정
+      step5: 미리보기/확인
+
+  Pattern:
+    fields:
+      id: integer
+      name: string
+      type: PatternType
+      description: string
+      source: PatternSource
+      source_url: string?
+      structure_preview: string?
+      file_path: string
+      tags: Tag[]
+      created_at: datetime
+      updated_at: datetime
+
+  Tag:
+    fields:
+      id: integer
+      name: string
+      category: string?
+
+  Work:
+    fields:
+      id: integer
+      name: string
+      type: PatternType
+      base_pattern_id: integer?
+      status: WorkStatus
+      export_path: string?
+      files: WorkFile[]
+      created_at: datetime
+      updated_at: datetime
+
+  WorkFile:
+    fields:
+      id: integer
+      work_id: integer
+      file_name: string
+      file_path: string
+      file_type: FileType
+
+  GuideSession:
+    fields:
+      id: integer
+      work_id: integer
+      current_step: GuideStep
+      conversation_log: ChatMessage[]
+      created_at: datetime
+      updated_at: datetime
+
+  ChatMessage:
+    fields:
+      role: enum[ai, user]
+      content: string
+      timestamp: datetime
+      options: string[]?
+
+  Stats:
+    fields:
+      total_patterns: integer
+      total_works: integer
+      recent_works: Work[]

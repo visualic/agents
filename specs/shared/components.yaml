@@ -1,0 +1,61 @@
+version: "2.0"
+
+shared_components:
+  - id: sidebar_nav
+    type: navigation
+    position: sidebar
+    function: 앱 전역 사이드바 네비게이션
+    items:
+      - label: 홈
+        icon: home
+        route: /
+      - label: 패턴 라이브러리
+        icon: library
+        route: /patterns
+      - label: 내 작업실
+        icon: workspace
+        route: /workspace
+      - label: 새로 만들기
+        icon: plus
+        route: /guide/new
+    used_in: [pattern-library, pattern-detail, guide-dialogue, preview-generate, workspace, work-detail]
+
+  - id: breadcrumb
+    type: breadcrumb
+    position: header
+    function: 현재 위치 표시 네비게이션
+    used_in: [pattern-library, pattern-detail, guide-dialogue, preview-generate, workspace, work-detail]
+
+  - id: toast
+    type: toast
+    position: overlay
+    function: 성공/에러 알림 메시지
+    variants:
+      - success: 내보내기 성공, 저장 완료
+      - error: 내보내기 실패, CLI 연결 실패
+      - info: 진행 중 알림
+    used_in: [pattern-detail, preview-generate, workspace, work-detail]
+
+  - id: type_badge
+    type: text
+    function: 패턴/작업물 유형 뱃지 (스킬=보라, 에이전트=시안, 오케스트레이션=오렌지)
+    variants:
+      - skill: "#8B5CF6"
+      - agent: "#06B6D4"
+      - orchestration: "#F97316"
+    used_in: [pattern-library, pattern-detail, workspace, work-detail]
+
+  - id: status_badge
+    type: text
+    function: 작업물 상태 뱃지 (초안/완료/내보내기됨)
+    variants:
+      - draft: 회색
+      - completed: 녹색
+      - exported: 파란색
+    used_in: [workspace, work-detail]
+
+  - id: export_path_picker
+    type: form
+    position: overlay
+    function: 내보내기 경로 선택기 (.claude/skills/ 또는 .claude/agents/ 자동 감지)
+    used_in: [pattern-detail, preview-generate, work-detail]

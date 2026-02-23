@@ -1,0 +1,88 @@
+version: "2.0"
+
+screen:
+  name: 패턴 라이브러리
+  route: /patterns
+  layout: full-width
+
+data_requirements:
+  - resource: patterns
+    needs: [id, name, type, description, structure_preview, tags]
+    filters:
+      type: "?type"
+      tag: "?tag"
+      search: "?q"
+      sort: "?sort"
+
+  - resource: tags
+    needs: [id, name, category]
+
+components:
+  - id: search_bar
+    type: search-form
+    position: header
+    function: 패턴 이름/설명 검색
+    events:
+      - on: submit
+        do: 검색어로 패턴 필터링, URL 업데이트
+
+  - id: type_filter
+    type: tabs
+    position: header
+    function: 유형별 필터링 (전체/스킬/에이전트/오케스트레이션)
+    events:
+      - on: click:tab
+        do: 선택한 유형으로 필터링, URL 업데이트
+
+  - id: tag_filter
+    type: filter-form
+    position: header
+    function: 태그 칩으로 필터링
+    data_source:
+      resource: tags
+    events:
+      - on: click:tag
+        do: 선택한 태그로 필터링
+
+  - id: pattern_grid
+    type: grid
+    position: main
+    function: 패턴 카드 그리드 표시
+    data_source:
+      resource: patterns
+    events:
+      - on: click:card
+        do: 패턴 상세 페이지로 이동
+
+connections:
+  navigations:
+    - from: pattern_grid
+      to: /patterns/:id
+
+  shared_components:
+    - sidebar_nav
+    - breadcrumb
+
+tests:
+  - name: 초기 로드
+    when: 페이지 접속
+    then:
+      - 전체 패턴 카드 그리드 표시
+      - 유형 필터 탭 표시 (전체 활성)
+      - 검색바 표시
+
+  - name: 유형 필터링
+    when: "에이전트" 탭 클릭
+    then:
+      - URL이 ?type=agent로 변경
+      - 에이전트 패턴만 표시
+
+  - name: 검색
+    when: 검색바에 "코드 리뷰" 입력
+    then:
+      - 이름/설명에 "코드 리뷰" 포함된 패턴만 표시
+
+  - name: 패턴 상세 이동
+    when: 패턴 카드 클릭
+    then:
+      - /patterns/:id로 이동

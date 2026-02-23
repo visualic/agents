@@ -1,0 +1,19 @@
+appId: com.skillforge.app
+productName: SkillForge
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron/*'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  entitlementsInherit: build/entitlements.mac.plist
+  notarize: false

@@ -1,0 +1,92 @@
+version: "2.0"
+
+screen:
+  name: 미리보기 + 코드 생성
+  route: /guide/:workId/preview
+  layout: sidebar-main
+
+data_requirements:
+  - resource: works
+    needs: [id, name, type, status]
+    filters:
+      id: ":workId"
+
+  - resource: work_files
+    needs: [id, file_name, file_path, file_type]
+    filters:
+      work_id: ":workId"
+
+components:
+  - id: file_tree
+    type: navigation
+    position: sidebar
+    function: 생성될 파일 트리 구조 미리보기
+    data_source:
+      resource: work_files
+    events:
+      - on: click:file
+        do: 선택한 파일 내용을 에디터에 표시
+
+  - id: file_editor
+    type: text
+    position: main
+    function: 파일 내용 미리보기 + 편집 (마크다운 하이라이팅)
+    data_source:
+      resource: work_files
+    events:
+      - on: edit
+        do: 파일 내용 수정
+
+  - id: export_config
+    type: form
+    position: main
+    function: 내보내기 경로 설정
+    events:
+      - on: click:browse
+        do: 디렉토리 선택 다이얼로그 열기
+      - on: submit
+        do: 선택한 경로에 파일 내보내기 실행
+
+  - id: action_buttons
+    type: button
+    position: main
+    function: 내보내기 / 수정하기 버튼
+    events:
+      - on: click:export
+        do: .claude/ 디렉토리에 파일 생성, 작업물 상태를 exported로 변경
+      - on: click:edit
+        do: /guide/:workId로 돌아가기
+
+connections:
+  navigations:
+    - from: action_buttons
+      to: /guide/:workId
+    - from: action_buttons
+      to: /workspace
+
+  shared_components:
+    - sidebar_nav
+    - breadcrumb
+    - toast
+
+tests:
+  - name: 초기 로드
+    when: 페이지 접속
+    then:
+      - 파일 트리 표시 (SKILL.md, references/ 등)
+      - 첫 번째 파일 내용 에디터에 표시
+      - 내보내기 경로 기본값 표시
+
+  - name: 파일 편집
+    when: 에디터에서 내용 수정
+    then:
+      - 변경사항 실시간 반영
+      - 저장 표시
+
+  - name: 내보내기
+    when: "내보내기" 버튼 클릭
+    then:
+      - 선택한 경로에 파일 생성
+      - 성공 토스트 표시
+      - 작업물 상태 exported로 변경
+      - /workspace로 이동 옵션 표시

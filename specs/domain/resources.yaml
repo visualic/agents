@@ -1,0 +1,61 @@
+resources:
+  patterns:
+    description: 스킬/에이전트/오케스트레이션 패턴
+    fields:
+      id: { type: integer, pk: true }
+      name: { type: string, required: true }
+      type: { type: enum, values: [skill, agent, orchestration], required: true }
+      description: { type: string }
+      source: { type: enum, values: [internal, external], required: true }
+      source_url: { type: string }
+      structure_preview: { type: text }
+      file_path: { type: string, required: true }
+      tags: { type: string[], relation: tags }
+      created_at: { type: datetime }
+      updated_at: { type: datetime }
+
+  tags:
+    description: 패턴 분류 태그
+    fields:
+      id: { type: integer, pk: true }
+      name: { type: string, required: true, unique: true }
+      category: { type: string }
+
+  works:
+    description: 사용자가 생성/수정한 작업물
+    fields:
+      id: { type: integer, pk: true }
+      name: { type: string, required: true }
+      type: { type: enum, values: [skill, agent, orchestration], required: true }
+      base_pattern_id: { type: integer, relation: patterns }
+      status: { type: enum, values: [draft, completed, exported], default: draft }
+      export_path: { type: string }
+      files: { type: work_files[], relation: work_files }
+      created_at: { type: datetime }
+      updated_at: { type: datetime }
+
+  work_files:
+    description: 작업물 파일 목록
+    fields:
+      id: { type: integer, pk: true }
+      work_id: { type: integer, relation: works, required: true }
+      file_name: { type: string, required: true }
+      file_path: { type: string, required: true }
+      file_type: { type: enum, values: [skill_md, agent_md, reference, config] }
+
+  guide_sessions:
+    description: 가이드 대화 세션
+    fields:
+      id: { type: integer, pk: true }
+      work_id: { type: integer, relation: works, required: true }
+      current_step: { type: enum, values: [step1, step2, step3, step4, step5] }
+      conversation_log: { type: json }
+      created_at: { type: datetime }
+      updated_at: { type: datetime }
+
+  stats:
+    description: 앱 통계 (로컬 집계)
+    fields:
+      total_patterns: { type: integer }
+      total_works: { type: integer }
+      recent_works: { type: works[], limit: 5 }

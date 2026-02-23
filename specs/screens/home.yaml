@@ -1,0 +1,69 @@
+version: "2.0"
+
+screen:
+  name: 홈 화면
+  route: /
+  layout: full-width
+
+data_requirements:
+  - resource: stats
+    needs: [total_patterns, total_works, recent_works]
+
+components:
+  - id: app_header
+    type: text
+    position: header
+    function: 로고 + 앱 이름 표시
+
+  - id: menu_cards
+    type: grid
+    position: main
+    function: 3가지 메인 메뉴 카드 표시 (패턴 라이브러리, 내 작업실, 새로 만들기)
+    events:
+      - on: click:card
+        do: 선택한 메뉴 화면으로 이동
+
+  - id: recent_works
+    type: list
+    position: main
+    function: 최근 작업물 미리보기 (최대 5개)
+    data_source:
+      resource: stats
+    events:
+      - on: click:item
+        do: 작업물 상세로 이동
+
+  - id: stats_summary
+    type: stat-card
+    position: main
+    function: 통계 요약 (패턴 수, 작업물 수)
+    data_source:
+      resource: stats
+
+connections:
+  navigations:
+    - from: menu_cards
+      to: /patterns
+    - from: menu_cards
+      to: /workspace
+    - from: menu_cards
+      to: /guide/new
+    - from: recent_works
+      to: /workspace/:id
+
+tests:
+  - name: 초기 로드
+    when: 앱 시작
+    then:
+      - 3개 메뉴 카드 표시
+      - 통계 요약 표시
+
+  - name: 패턴 라이브러리 이동
+    when: 패턴 라이브러리 카드 클릭
+    then:
+      - /patterns로 이동
+
+  - name: 최근 작업 이동
+    when: 최근 작업물 항목 클릭
+    then:
+      - /workspace/:id로 이동

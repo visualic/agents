@@ -1,0 +1,61 @@
+version: "2.0"
+
+project:
+  name: SkillForge
+  description: Claude Code 스킬/에이전트/오케스트레이션 패턴 기반 빌더
+  platform: electron
+
+screens:
+  - id: home
+    file: home.yaml
+    route: /
+    name: 홈 화면
+
+  - id: pattern-library
+    file: pattern-library.yaml
+    route: /patterns
+    name: 패턴 라이브러리
+
+  - id: pattern-detail
+    file: pattern-detail.yaml
+    route: /patterns/:id
+    name: 패턴 상세
+
+  - id: guide-dialogue
+    file: guide-dialogue.yaml
+    route: /guide/:workId
+    name: 가이드 대화
+
+  - id: preview-generate
+    file: preview-generate.yaml
+    route: /guide/:workId/preview
+    name: 미리보기 + 코드 생성
+
+  - id: workspace
+    file: workspace.yaml
+    route: /workspace
+    name: 내 작업실
+
+  - id: work-detail
+    file: work-detail.yaml
+    route: /workspace/:id
+    name: 작업물 상세
+
+navigation_flow:
+  home:
+    - pattern-library
+    - workspace
+    - guide-dialogue
+  pattern-library:
+    - pattern-detail
+  pattern-detail:
+    - guide-dialogue
+    - preview-generate
+  guide-dialogue:
+    - preview-generate
+  preview-generate:
+    - workspace
+  workspace:
+    - work-detail
+  work-detail:
+    - preview-generate

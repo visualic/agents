@@ -1,0 +1,108 @@
+version: "2.0"
+
+screen:
+  name: 패턴 상세
+  route: /patterns/:id
+  layout: main-sidebar
+
+data_requirements:
+  - resource: patterns
+    needs: [id, name, type, description, source, source_url, structure_preview, file_path, tags]
+    filters:
+      id: ":id"
+
+  - resource: patterns
+    needs: [id, name, type]
+    filters:
+      related_to: ":id"
+
+components:
+  - id: pattern_header
+    type: detail
+    position: main
+    function: 패턴 기본 정보 표시 (이름, 타입 뱃지, 설명, 태그, 출처)
+    data_source:
+      resource: patterns
+
+  - id: structure_preview
+    type: text
+    position: main
+    function: 구조 미리보기 다이어그램 (마크다운 렌더링)
+    data_source:
+      resource: patterns
+
+  - id: code_viewer
+    type: text
+    position: main
+    function: 패턴 마크다운 원본 코드 보기/편집
+    data_source:
+      resource: patterns
+    events:
+      - on: click:edit
+        do: 편집 모드로 전환
+
+  - id: action_buttons
+    type: button
+    position: sidebar
+    function: 액션 버튼 그룹
+    events:
+      - on: click:customize
+        do: 가이드 대화로 이동 (패턴 기반)
+      - on: click:fork
+        do: 수정 모드로 작업물 생성
+      - on: click:combine
+        do: 패턴 조합 모달 열기
+      - on: click:export
+        do: 바로 내보내기 (경로 선택 모달)
+
+  - id: related_patterns
+    type: list
+    position: sidebar
+    function: 관련 패턴 추천 목록
+    data_source:
+      resource: patterns
+    events:
+      - on: click:item
+        do: 해당 패턴 상세로 이동
+
+  - id: export_modal
+    type: modal
+    position: overlay
+    function: 내보내기 경로 선택 대화상자
+    events:
+      - on: submit
+        do: 선택한 경로에 패턴 파일 내보내기
+
+connections:
+  navigations:
+    - from: action_buttons
+      to: /guide/:workId
+    - from: related_patterns
+      to: /patterns/:id
+
+  shared_components:
+    - sidebar_nav
+    - breadcrumb
+    - toast
+
+tests:
+  - name: 초기 로드
+    when: 페이지 접속
+    then:
+      - 패턴 정보 헤더 표시
+      - 구조 미리보기 다이어그램 표시
+      - 마크다운 코드 표시
+      - 액션 버튼 4개 표시
+
+  - name: 가이드 대화 시작
+    when: "가이드 대화로 커스터마이즈" 버튼 클릭
+    then:
+      - 새 작업물 생성 (base_pattern_id 설정)
+      - /guide/:workId로 이동
+
+  - name: 바로 내보내기
+    when: "바로 내보내기" 버튼 클릭
+    then:
+      - 내보내기 경로 선택 모달 표시
+      - 경로 선택 후 파일 생성
+      - 성공 토스트 표시

@@ -1,0 +1,111 @@
+version: "2.0"
+
+screen:
+  name: 작업물 상세
+  route: /workspace/:id
+  layout: sidebar-main
+
+data_requirements:
+  - resource: works
+    needs: [id, name, type, base_pattern_id, status, export_path, created_at, updated_at]
+    filters:
+      id: ":id"
+
+  - resource: work_files
+    needs: [id, file_name, file_path, file_type]
+    filters:
+      work_id: ":id"
+
+components:
+  - id: work_header
+    type: detail
+    position: main
+    function: 작업물 기본 정보 (이름, 타입, 상태, 기반 패턴, 날짜)
+    data_source:
+      resource: works
+
+  - id: file_tree
+    type: navigation
+    position: sidebar
+    function: 작업물 파일 트리 구조
+    data_source:
+      resource: work_files
+    events:
+      - on: click:file
+        do: 선택한 파일을 에디터에 표시
+
+  - id: markdown_editor
+    type: text
+    position: main
+    function: 마크다운 편집기 (실시간 미리보기)
+    data_source:
+      resource: work_files
+    events:
+      - on: edit
+        do: 파일 내용 수정 및 저장
+
+  - id: action_buttons
+    type: button
+    position: main
+    function: 편집 / 재내보내기 / 삭제 버튼
+    events:
+      - on: click:re_export
+        do: 내보내기 경로 선택 후 재내보내기
+      - on: click:delete
+        do: 삭제 확인 모달 표시
+
+  - id: export_history
+    type: list
+    position: sidebar
+    function: 내보내기 이력 (경로, 날짜)
+    data_source:
+      resource: works
+
+  - id: delete_modal
+    type: modal
+    position: overlay
+    function: 삭제 확인 대화상자
+    events:
+      - on: confirm
+        do: 작업물 삭제 후 /workspace로 이동
+      - on: cancel
+        do: 모달 닫기
+
+connections:
+  navigations:
+    - from: action_buttons
+      to: /workspace
+    - from: delete_modal
+      to: /workspace
+
+  shared_components:
+    - sidebar_nav
+    - breadcrumb
+    - toast
+
+tests:
+  - name: 초기 로드
+    when: 페이지 접속
+    then:
+      - 작업물 정보 헤더 표시
+      - 파일 트리 표시
+      - 첫 번째 파일 에디터에 표시
+
+  - name: 파일 편집
+    when: 에디터에서 내용 수정
+    then:
+      - 변경사항 로컬 파일에 저장
+
+  - name: 재내보내기
+    when: "재내보내기" 버튼 클릭
+    then:
+      - 경로 선택 다이얼로그 표시
+      - 선택한 경로에 파일 재생성
+      - 성공 토스트 표시
+
+  - name: 삭제
+    when: "삭제" 버튼 클릭
+    then:
+      - 삭제 확인 모달 표시
+      - 확인 시 작업물 및 파일 삭제
+      - /workspace로 이동
