@@ -127,9 +127,10 @@ function Home(): React.ReactElement {
           <h2 className="text-text-secondary text-xs font-semibold uppercase tracking-wider mb-3">
             통계
           </h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <StatCard label="전체 패턴" value={stats.total_patterns} />
             <StatCard label="내 작업" value={stats.total_works} />
+            <StatCard label="아티팩트" value={stats.total_artifacts} />
           </div>
         </section>
       )}
@@ -139,7 +140,7 @@ function Home(): React.ReactElement {
         <h2 className="text-text-secondary text-xs font-semibold uppercase tracking-wider mb-3">
           바로가기
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <MenuCard
             to="/patterns"
             title="패턴 라이브러리"
@@ -151,6 +152,12 @@ function Home(): React.ReactElement {
             title="내 작업실"
             description="작업 목록과 진행 상황 관리"
             icon="🗂️"
+          />
+          <MenuCard
+            to="/discover"
+            title="디스커버리"
+            description="GitHub 패턴을 탐색하고 승격"
+            icon="🔍"
           />
           <MenuCard
             to="/guide/new"

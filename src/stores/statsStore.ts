@@ -19,6 +19,8 @@ export interface RecentWork {
 export interface StatsSummary {
   total_patterns: number
   total_works: number
+  total_artifacts: number
+  artifacts_pending: number
   recent_works: RecentWork[]
 }
 

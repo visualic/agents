@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 const navItems = [
   { label: '홈', href: '/' },
   { label: '패턴 라이브러리', href: '/patterns' },
+  { label: '디스커버리', href: '/discover' },
   { label: '작업공간', href: '/workspace' },
 ] as const
 

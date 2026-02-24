@@ -91,6 +91,8 @@ describe('getStatsSummary', () => {
     expect(result).toEqual({
       total_patterns: 0,
       total_works: 0,
+      total_artifacts: 0,
+      artifacts_pending: 0,
       recent_works: []
     })
   })

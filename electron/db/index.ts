@@ -60,6 +60,45 @@ const MIGRATIONS = [
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `
+  },
+  {
+    version: 2,
+    sql: `
+      CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE artifacts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        run_id TEXT NOT NULL,
+        artifact_id TEXT NOT NULL,
+        artifact_type TEXT NOT NULL CHECK(artifact_type IN ('skill','agent','orchestration','tooling','reference')),
+        title TEXT NOT NULL,
+        summary TEXT,
+        source_url TEXT,
+        source_owner TEXT,
+        source_repo TEXT,
+        license TEXT DEFAULT 'UNKNOWN',
+        score_total INTEGER DEFAULT 0,
+        quality_scores TEXT,
+        risk_flags TEXT,
+        tags TEXT,
+        evidence_snippets TEXT,
+        readme_content TEXT,
+        meta TEXT,
+        status TEXT NOT NULL DEFAULT 'curated' CHECK(status IN ('curated','review','verified','promoted','rejected')),
+        curation_notes TEXT,
+        promoted_pattern_id INTEGER REFERENCES patterns(id),
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE UNIQUE INDEX idx_artifacts_run_artifact ON artifacts(run_id, artifact_id);
+      CREATE INDEX idx_artifacts_status ON artifacts(status);
+      CREATE INDEX idx_artifacts_type ON artifacts(artifact_type);
+      CREATE INDEX idx_artifacts_score ON artifacts(score_total);
+    `
   }
 ]
 

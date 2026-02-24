@@ -7,6 +7,8 @@ import GuideDialogue from './pages/GuideDialogue'
 import Preview from './pages/Preview'
 import Workspace from './pages/Workspace'
 import WorkDetail from './pages/WorkDetail'
+import Discover from './pages/Discover'
+import ArtifactDetail from './pages/ArtifactDetail'
 
 function App(): React.ReactElement {
   return (
@@ -19,6 +21,8 @@ function App(): React.ReactElement {
         <Route path="/guide/:workId/preview" element={<Preview />} />
         <Route path="/workspace" element={<Workspace />} />
         <Route path="/workspace/:id" element={<WorkDetail />} />
+        <Route path="/discover" element={<Discover />} />
+        <Route path="/discover/:id" element={<ArtifactDetail />} />
       </Routes>
     </AppLayout>
   )

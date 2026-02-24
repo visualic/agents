@@ -21,6 +21,8 @@ export interface RecentWork {
 export interface StatsSummary {
   total_patterns: number
   total_works: number
+  total_artifacts: number
+  artifacts_pending: number
   recent_works: RecentWork[]
 }
 
@@ -44,6 +46,20 @@ export function getStatsSummary(db: Database.Database): StatsSummary {
     .prepare('SELECT COUNT(*) as count FROM works')
     .get() as { count: number }
 
+  // Artifact counts (handle missing table gracefully for pre-v2 DBs)
+  let artifactCount = 0
+  let artifactsPending = 0
+  try {
+    const ac = db.prepare('SELECT COUNT(*) as count FROM artifacts').get() as { count: number }
+    artifactCount = ac.count
+    const ap = db
+      .prepare("SELECT COUNT(*) as count FROM artifacts WHERE status IN ('curated','review')")
+      .get() as { count: number }
+    artifactsPending = ap.count
+  } catch {
+    // artifacts table may not exist yet
+  }
+
   const recentWorks = db
     .prepare(
       'SELECT id, name, type, status, created_at FROM works ORDER BY created_at DESC LIMIT 5'
@@ -53,6 +69,8 @@ export function getStatsSummary(db: Database.Database): StatsSummary {
   return {
     total_patterns: patternCount.count,
     total_works: workCount.count,
+    total_artifacts: artifactCount,
+    artifacts_pending: artifactsPending,
     recent_works: recentWorks
   }
 }
