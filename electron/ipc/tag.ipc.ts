@@ -2,6 +2,8 @@
 // @SPEC docs/planning/02-trd.md#태그-관리
 // @TEST electron/ipc/tag.ipc.test.ts
 
+import { ipcMain } from 'electron'
+import { getDatabase } from '../db/index'
 import type Database from 'better-sqlite3'
 
 // --- Types ---
@@ -61,19 +63,12 @@ export function getTagsByCategory(db: Database.Database, category: string): Tag[
 }
 
 // --- IPC Handler Registration ---
-// Note: Electron imports are deferred to avoid issues in test environments
-// where the 'electron' module is not available.
 
 /**
  * Electron ipcMain에 tag 관련 핸들러 등록.
  * main process 초기화 시 호출.
  */
 export function registerTagHandlers(): void {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { ipcMain } = require('electron')
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { getDatabase } = require('../db')
-
   ipcMain.handle('tag:get-all', () => getAllTags(getDatabase()))
   ipcMain.handle('tag:create', (_e: unknown, data: TagInput) => createTag(getDatabase(), data))
   ipcMain.handle('tag:delete', (_e: unknown, id: number) => deleteTag(getDatabase(), id))

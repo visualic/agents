@@ -7,9 +7,9 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
-    "preview": "electron-vite preview",
+    "dev": "electron-vite dev --config electron-vite.config.ts",
+    "build": "electron-vite build --config electron-vite.config.ts",
+    "preview": "electron-vite preview --config electron-vite.config.ts",
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"electron/**/*.ts\"",

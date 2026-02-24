@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { initDatabase } from './db/index'
 import { registerPatternHandlers } from './ipc/pattern.ipc'
-import { registerWorkHandlers } from './ipc/work.ipc'
+import { registerWorkIpcHandlers } from './ipc/work.ipc'
 import { registerWorkFileHandlers } from './ipc/work-file.ipc'
 import { registerGuideHandlers } from './ipc/guide.ipc'
 import { registerTagHandlers } from './ipc/tag.ipc'
@@ -23,7 +23,7 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false
     }
   })
@@ -56,7 +56,7 @@ app.whenReady().then(() => {
 
   // Register all IPC handlers
   registerPatternHandlers()
-  registerWorkHandlers()
+  registerWorkIpcHandlers()
   registerWorkFileHandlers()
   registerGuideHandlers()
   registerTagHandlers()
