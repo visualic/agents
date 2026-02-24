@@ -7,3 +7,7 @@ dist/
 .env
 .env.local
 .DS_Store
+.bkit/
+docs/.bkit-memory.json
+docs/.pdca-status.json
+docs/.pdca-snapshots/
