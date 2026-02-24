@@ -5,10 +5,8 @@ import PatternLibrary from './pages/PatternLibrary'
 import PatternDetail from './pages/PatternDetail'
 import GuideDialogue from './pages/GuideDialogue'
 import Preview from './pages/Preview'
-
-function Placeholder({ name }: { name: string }): React.ReactElement {
-  return <div className="p-8 text-text-secondary">{name} (TODO)</div>
-}
+import Workspace from './pages/Workspace'
+import WorkDetail from './pages/WorkDetail'
 
 function App(): React.ReactElement {
   return (
@@ -19,8 +17,8 @@ function App(): React.ReactElement {
         <Route path="/patterns/:id" element={<PatternDetail />} />
         <Route path="/guide/:workId" element={<GuideDialogue />} />
         <Route path="/guide/:workId/preview" element={<Preview />} />
-        <Route path="/workspace" element={<Placeholder name="Workspace" />} />
-        <Route path="/workspace/:id" element={<Placeholder name="Work Detail" />} />
+        <Route path="/workspace" element={<Workspace />} />
+        <Route path="/workspace/:id" element={<WorkDetail />} />
       </Routes>
     </AppLayout>
   )
