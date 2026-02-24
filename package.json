@@ -4,6 +4,7 @@
   "description": "Claude Code \uc2a4\ud0ac/\uc5d0\uc774\uc804\ud2b8/\uc624\ucf00\uc2a4\ud2b8\ub808\uc774\uc158 \ud328\ud134 \uc218\uc9d1, \ubd84\uc11d, \uc0dd\uc131 \ub3c4\uad6c",
   "main": "./out/main/index.js",
   "author": "jk",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "dev": "electron-vite dev",
